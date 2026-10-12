@@ -74,6 +74,8 @@ footer{background:#18080f;color:#f0ddba;text-align:center;padding:60px 20px;posi
 .hero-logo{display:block;width:min(240px,58vw);height:auto;object-fit:contain;margin:0 auto 16px;mix-blend-mode:screen;filter:drop-shadow(0 4px 18px #d99ab533)}
 .footer-logo{display:block;width:min(210px,55vw);height:auto;margin:0 auto 18px;mix-blend-mode:screen}
 .nav .brand{display:flex;align-items:center}
+.hero-sound{margin:14px auto 0;display:block;background:#f8edda;color:#5a2534;border:1px solid #c9a45c;cursor:pointer}
+.hero-sound[aria-pressed="true"]{background:#d9bd7b;color:#351622}
 @media(max-width:720px){.brand-logo{width:74px}.hero-logo{width:min(205px,58vw)}.footer-logo{width:175px}}
 
 </style>
@@ -95,6 +97,7 @@ footer{background:#18080f;color:#f0ddba;text-align:center;padding:60px 20px;posi
     <div class="date">Friday · 20 November 2026 · The Nikunj, Gurgaon</div>
     <p class="invite-copy">Two hearts, two families, one beautiful forever.<br>Join us as a new chapter begins.</p>
     <button class="cta" id="openInvite">Unfold your invitation <span>↗</span></button>
+    <button class="pill hero-sound" id="soundBtnHero" type="button" aria-pressed="false">♫ Sound off · Tap to turn on</button>
     <div class="scroll">A week of love, laughter & traditions<i>⌄</i></div>
   </div>
 </header>
@@ -145,8 +148,8 @@ footer{background:#18080f;color:#f0ddba;text-align:center;padding:60px 20px;posi
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
 const main=document.getElementById('invitation'),openBtn=document.getElementById('openInvite');
-const weddingMusic=document.getElementById('weddingMusic'),soundBtn=document.getElementById('soundBtn');weddingMusic.volume=0.42;let musicOn=false;async function startWeddingMusic(){try{await weddingMusic.play();musicOn=true;soundBtn.textContent='♫ Sound on';soundBtn.setAttribute('aria-pressed','true');}catch(err){notify('Tap Sound on to play the wedding music.')}}function stopWeddingMusic(){weddingMusic.pause();musicOn=false;soundBtn.textContent='♫ Sound off';soundBtn.setAttribute('aria-pressed','false')}
-openBtn.addEventListener('click',()=>{main.classList.add('revealed');openBtn.innerHTML='Invitation unfolded ✓';openBtn.disabled=true;startWeddingMusic();document.getElementById('blessings').scrollIntoView({behavior:'smooth'});});
+const weddingMusic=document.getElementById('weddingMusic'),soundButtons=[document.getElementById('soundBtn'),document.getElementById('soundBtnHero')];weddingMusic.volume=0.42;let musicOn=false;function syncSoundButtons(){soundButtons.forEach(b=>{b.textContent=musicOn?'♫ Sound on · Tap to turn off':(b.id==='soundBtnHero'?'♫ Sound off · Tap to turn on':'♫ Sound off');b.setAttribute('aria-pressed',String(musicOn));});}async function startWeddingMusic(showHint=false){try{await weddingMusic.play();musicOn=true;syncSoundButtons();}catch(err){musicOn=false;syncSoundButtons();if(showHint)notify('Your browser blocked autoplay. Tap Sound on to play the wedding music.')}}function stopWeddingMusic(){weddingMusic.pause();musicOn=false;syncSoundButtons()}
+openBtn.addEventListener('click',()=>{main.classList.add('revealed');openBtn.innerHTML='Invitation unfolded ✓';openBtn.disabled=true;if(!musicOn)startWeddingMusic(true);document.getElementById('blessings').scrollIntoView({behavior:'smooth'});});
 document.querySelectorAll('.photo-tile').forEach(tile=>tile.addEventListener('click',()=>{const img=tile.querySelector('img');document.getElementById('lightboxImage').src=img.src;document.getElementById('lightbox').classList.add('show')}));
 function closeLightbox(){document.getElementById('lightbox').classList.remove('show')}
 document.getElementById('closeLightbox').addEventListener('click',closeLightbox);
@@ -167,7 +170,9 @@ Response: ${document.getElementById('attendance').value}
 Guests: ${document.getElementById('guests').value}
 Functions: ${document.getElementById('functions').value}
 Message: ${document.getElementById('message').value.trim()||'—'}`;const whatsappUrl='https://wa.me/918826276051?text='+encodeURIComponent(msg);window.open(whatsappUrl,'_blank','noopener,noreferrer');});
-soundBtn.addEventListener('click',()=>{if(musicOn){stopWeddingMusic()}else{startWeddingMusic()}});
+soundButtons.forEach(button=>button.addEventListener('click',()=>{if(musicOn){stopWeddingMusic()}else{startWeddingMusic(true)}}));
+// Try to begin with music on. Browsers may block audible autoplay until the visitor interacts.
+window.addEventListener('load',()=>{startWeddingMusic(false)});
 </script>
 </body>
 </html>
