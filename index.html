@@ -74,8 +74,6 @@ footer{background:#18080f;color:#f0ddba;text-align:center;padding:60px 20px;posi
 .hero-logo{display:block;width:min(240px,58vw);height:auto;object-fit:contain;margin:0 auto 16px;mix-blend-mode:screen;filter:drop-shadow(0 4px 18px #d99ab533)}
 .footer-logo{display:block;width:min(210px,55vw);height:auto;margin:0 auto 18px;mix-blend-mode:screen}
 .nav .brand{display:flex;align-items:center}
-.hero-sound{margin:14px auto 0;display:block;background:#f8edda;color:#5a2534;border:1px solid #c9a45c;cursor:pointer}
-.hero-sound[aria-pressed="true"]{background:#d9bd7b;color:#351622}
 @media(max-width:720px){.brand-logo{width:74px}.hero-logo{width:min(205px,58vw)}.footer-logo{width:175px}}
 
 </style>
@@ -97,7 +95,6 @@ footer{background:#18080f;color:#f0ddba;text-align:center;padding:60px 20px;posi
     <div class="date">Friday · 20 November 2026 · The Nikunj, Gurgaon</div>
     <p class="invite-copy">Two hearts, two families, one beautiful forever.<br>Join us as a new chapter begins.</p>
     <button class="cta" id="openInvite">Unfold your invitation <span>↗</span></button>
-    <button class="pill hero-sound" id="soundBtnHero" type="button" aria-pressed="false">♫ Sound off · Tap to turn on</button>
     <div class="scroll">A week of love, laughter & traditions<i>⌄</i></div>
   </div>
 </header>
@@ -105,7 +102,7 @@ footer{background:#18080f;color:#f0ddba;text-align:center;padding:60px 20px;posi
 <section class="section intro" id="blessings"><div class="wrap">
   <div class="kicker">A blessing that lives forever</div><h2 class="heading">With blessings from above</h2>
   <p class="sub">As two families come together to celebrate a lifetime of love, we remember those whose blessings remain with us.</p>
-  <div class="blessing-card"><blockquote>“With the blessings of Late Shri Gopal Krishan Gupta and Smt. Sroj Devi Gupta”</blockquote><div class="parents">With love, prayers & the blessings of our families</div></div>
+  <div class="blessing-card"><blockquote>“With the blessings of Late Shri Gopal Krishan Gupta and Smt. Saroj Devi Gupta”</blockquote><div class="parents">With love, prayers & the blessings of our families</div></div>
   <div class="families">
     <div class="family-card"><div class="orn">❦</div><h3>The Mittal Family</h3><p>Mrs. Arti Mittal</p><p>Mr. Sanjay Mittal</p><p style="font-style:italic;margin-top:13px">request the pleasure of your company</p></div>
     <div class="family-card"><div class="orn">❦</div><h3>The Jain Family</h3><p>Mrs. Meghna Jain</p><p>Mr. Deepak Jain</p><p style="font-style:italic;margin-top:13px">as their families celebrate together</p></div>
@@ -114,7 +111,7 @@ footer{background:#18080f;color:#f0ddba;text-align:center;padding:60px 20px;posi
 
 <section class="section gallery" id="our-photos"><div class="wrap"><div class="kicker">Little moments, forever memories</div><h2 class="heading">A glimpse of us</h2><p class="sub">A few favourite frames from Tejasvi and Anshika's journey. Tap any photograph to view it larger.</p>
 <div class="photo-grid">
-<div class="photo-tile"><img src="images/portrait.png" alt="Tejasvi and Anshika dressed for a celebration" loading="lazy"><span>The celebration begins</span></div>
+<div class="photo-tile"><img src="images/portrait.jpg" alt="Tejasvi and Anshika dressed for a celebration" loading="lazy"><span>The celebration begins</span></div>
 <div class="photo-tile"><img src="images/couple-01.jpg" alt="A tender moment together outdoors" loading="lazy"><span>Our quiet moments</span></div>
 <div class="photo-tile"><img src="images/couple-02.jpg" alt="Couple enjoying a beach moment" loading="lazy"><span>Just us</span></div>
 <div class="photo-tile"><img src="images/couple-03.jpg" alt="Couple running hand in hand on the beach" loading="lazy"><span>Every adventure</span></div>
@@ -148,8 +145,8 @@ footer{background:#18080f;color:#f0ddba;text-align:center;padding:60px 20px;posi
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
 const main=document.getElementById('invitation'),openBtn=document.getElementById('openInvite');
-const weddingMusic=document.getElementById('weddingMusic'),soundButtons=[document.getElementById('soundBtn'),document.getElementById('soundBtnHero')];weddingMusic.volume=0.42;let musicOn=false;function syncSoundButtons(){soundButtons.forEach(b=>{b.textContent=musicOn?'♫ Sound on · Tap to turn off':(b.id==='soundBtnHero'?'♫ Sound off · Tap to turn on':'♫ Sound off');b.setAttribute('aria-pressed',String(musicOn));});}async function startWeddingMusic(showHint=false){try{await weddingMusic.play();musicOn=true;syncSoundButtons();}catch(err){musicOn=false;syncSoundButtons();if(showHint)notify('Your browser blocked autoplay. Tap Sound on to play the wedding music.')}}function stopWeddingMusic(){weddingMusic.pause();musicOn=false;syncSoundButtons()}
-openBtn.addEventListener('click',()=>{main.classList.add('revealed');openBtn.innerHTML='Invitation unfolded ✓';openBtn.disabled=true;if(!musicOn)startWeddingMusic(true);document.getElementById('blessings').scrollIntoView({behavior:'smooth'});});
+const weddingMusic=document.getElementById('weddingMusic'),soundBtn=document.getElementById('soundBtn');weddingMusic.volume=0.42;let musicOn=false;async function startWeddingMusic(){try{await weddingMusic.play();musicOn=true;soundBtn.textContent='♫ Sound on';soundBtn.setAttribute('aria-pressed','true');}catch(err){notify('Tap Sound on to play the wedding music.')}}function stopWeddingMusic(){weddingMusic.pause();musicOn=false;soundBtn.textContent='♫ Sound off';soundBtn.setAttribute('aria-pressed','false')}
+openBtn.addEventListener('click',()=>{main.classList.add('revealed');openBtn.innerHTML='Invitation unfolded ✓';openBtn.disabled=true;startWeddingMusic();document.getElementById('blessings').scrollIntoView({behavior:'smooth'});});
 document.querySelectorAll('.photo-tile').forEach(tile=>tile.addEventListener('click',()=>{const img=tile.querySelector('img');document.getElementById('lightboxImage').src=img.src;document.getElementById('lightbox').classList.add('show')}));
 function closeLightbox(){document.getElementById('lightbox').classList.remove('show')}
 document.getElementById('closeLightbox').addEventListener('click',closeLightbox);
@@ -170,9 +167,7 @@ Response: ${document.getElementById('attendance').value}
 Guests: ${document.getElementById('guests').value}
 Functions: ${document.getElementById('functions').value}
 Message: ${document.getElementById('message').value.trim()||'—'}`;const whatsappUrl='https://wa.me/918826276051?text='+encodeURIComponent(msg);window.open(whatsappUrl,'_blank','noopener,noreferrer');});
-soundButtons.forEach(button=>button.addEventListener('click',()=>{if(musicOn){stopWeddingMusic()}else{startWeddingMusic(true)}}));
-// Try to begin with music on. Browsers may block audible autoplay until the visitor interacts.
-window.addEventListener('load',()=>{startWeddingMusic(false)});
+soundBtn.addEventListener('click',()=>{if(musicOn){stopWeddingMusic()}else{startWeddingMusic()}});
 </script>
 </body>
 </html>
